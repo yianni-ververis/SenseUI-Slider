@@ -1,0 +1,12 @@
+#SenseUI-Slider {
+	padding: 10px;
+}
+#SenseUI-Slider #sliderMin,
+#SenseUI-Slider #sliderMax {
+	padding-top: 5px;
+	display: inline-block;
+	width: 49%;
+}
+#SenseUI-Slider #sliderMax {
+	text-align: right;
+}
