@@ -40,12 +40,6 @@ define([
 					min : 1,
 					max : 1,
 					items : {
-						label : {
-							type : "string",
-							ref : "qListObjectDef.qDef.qFieldLabels.0",
-							label : "Label",
-							show : true
-						},
 						libraryId : {
 							type : "string",
 							component : "library-item",
@@ -73,24 +67,24 @@ define([
 					items: {
 						DropDown: {
 							type: "items",
-							label: "DropDown Settings",
+							label: "Slider Settings",
 							items: {						
-								ListType:{
-									ref: "ListType",
-									expression:"optional",
-									translation: "List Type",
-									type: "string",
-									defaultValue: "vertical",
-									component: "dropdown",
-									options: [ {
-											value: "horizontal",
-											label: "horizontal"
-										}, {
-											value: "vertical",
-											label: "vertical"
-										}
-									]
-								},
+								// ListType:{
+								// 	ref: "ListType",
+								// 	expression:"optional",
+								// 	translation: "List Type",
+								// 	type: "string",
+								// 	defaultValue: "vertical",
+								// 	component: "dropdown",
+								// 	options: [ {
+								// 			value: "horizontal",
+								// 			label: "horizontal"
+								// 		}, {
+								// 			value: "vertical",
+								// 			label: "vertical"
+								// 		}
+								// 	]
+								// },
 							}
 						}
 					}
