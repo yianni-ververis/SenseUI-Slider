@@ -1,17 +1,51 @@
+/**
+ *
+ * @title Sense UI - Slider
+ * @description Integer Range Slider for multiple selections
+ *
+ * @author yianni.ververis@qlik.com
+ *
+ * @example https://github.com/yianni-ververis/SenseUI-Slider
+ */
+
 define([
 	"qlik",
 	"jquery",
 	"qvangular",
-	"text!./jquery-ui.css",
-	"text!./senseui-slider.css",
-	"text!./template.html",
 	'underscore'
-], function(qlik, $, qvangular, cssjQueryUI, cssContent, template, _) {
+], function(qlik, $, qvangular, _) {
 'use strict';
 
-	// Inject the custom CSS
-	$("<style>").html(cssjQueryUI).appendTo("head");
-	$("<style>").html(cssContent).appendTo("head");
+	var vhost = '/extensions',
+		whitelist = [
+			'localhost:4848',
+			'demos.qlik.com'	
+		];
+
+	if ($.inArray(window.location.host, whitelist) == -1) {
+		vhost = 'https://demos.qlik.com/extensions';
+	}
+	
+	var css1 = vhost + '/senseui-slider/jquery-ui.css',
+		css2 = vhost + '/senseui-slider/senseui-slider.css';
+
+	ajax(css1);
+	ajax(css2);
+
+	function ajax (uri) {
+		$.ajax({
+			url: uri,
+			async: true,
+			crossDomain : true,
+			success: function (file) {
+				$("<style>").html(file).appendTo("head");
+			},
+			error: function (e) {
+				console.log(e);
+				console.log(uri);
+			}
+		});
+	};
 
 	// Define properties
 	var me = {
@@ -68,23 +102,13 @@ define([
 						DropDown: {
 							type: "items",
 							label: "Slider Settings",
-							items: {						
-								// ListType:{
-								// 	ref: "ListType",
-								// 	expression:"optional",
-								// 	translation: "List Type",
-								// 	type: "string",
-								// 	defaultValue: "vertical",
-								// 	component: "dropdown",
-								// 	options: [ {
-								// 			value: "horizontal",
-								// 			label: "horizontal"
-								// 		}, {
-								// 			value: "vertical",
-								// 			label: "vertical"
-								// 		}
-								// 	]
-								// },
+							items: {	
+								ButtonHexDefault: { // @todo
+									type: "string",
+									label: 'Custom Hex Color for Slider Button',
+									ref: 'buttonHexDefault',
+									defaultValue: ''
+							    },
 							}
 						}
 					}
@@ -121,7 +145,13 @@ define([
 	};
 
 	// define HTML template
-	me.template = template;
+	me.template = '\
+		<div qv-extension style="height: 100%; position: relative; overflow: auto;" class="ng-scope" id="SenseUI-Slider">\n\
+			<div id="sliderBar"></div>\n\
+			<div id="sliderMin">{{range.minDis}}</div>\n\
+			<div id="sliderMax">{{range.maxDis}}</div>\n\
+		</div>\n\
+	';
 
 	// Controller for binding
 	me.controller =['$scope','$rootScope', function($scope,$rootScope){
