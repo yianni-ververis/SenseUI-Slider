@@ -10,3 +10,6 @@
 #SenseUI-Slider #sliderMax {
 	text-align: right;
 }
+#SenseUI-Slider #sliderTop {
+	padding-bottom: 5px;
+}

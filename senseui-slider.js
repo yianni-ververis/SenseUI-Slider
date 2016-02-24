@@ -8,44 +8,47 @@
  * @example https://github.com/yianni-ververis/SenseUI-Slider
  */
 
+// text.js has cross-domain restrictions
 define([
 	"qlik",
 	"jquery",
 	"qvangular",
-	'underscore'
+	'underscore',	
+	"css!./jquery-ui.css",
+	"css!./senseui-slider.css",
 ], function(qlik, $, qvangular, _) {
 'use strict';
-
-	var vhost = '/extensions',
-		whitelist = [
-			'localhost:4848',
-			'demos.qlik.com'	
-		];
-
-	if ($.inArray(window.location.host, whitelist) == -1) {
-		vhost = 'https://demos.qlik.com/extensions';
-	}
 	
-	var css1 = vhost + '/senseui-slider/jquery-ui.css',
-		css2 = vhost + '/senseui-slider/senseui-slider.css';
+	// var vhost = '/extensions',
+	// 	whitelist = [
+	// 		'localhost:4848',
+	// 		'demos.qlik.com'	
+	// 	];
 
-	ajax(css1);
-	ajax(css2);
+	// if ($.inArray(window.location.host, whitelist) == -1) {
+	// 	vhost = 'https://demos.qlik.com/extensions';
+	// }
+	
+	// var css1 = vhost + '/senseui-slider/jquery-ui.css',
+	// 	css2 = vhost + '/senseui-slider/senseui-slider.css';
 
-	function ajax (uri) {
-		$.ajax({
-			url: uri,
-			async: true,
-			crossDomain : true,
-			success: function (file) {
-				$("<style>").html(file).appendTo("head");
-			},
-			error: function (e) {
-				console.log(e);
-				console.log(uri);
-			}
-		});
-	};
+	// ajax(css1);
+	// ajax(css2);
+
+	// function ajax (uri) {
+	// 	$.ajax({
+	// 		url: uri,
+	// 		async: true,
+	// 		crossDomain : true,
+	// 		success: function (file) {
+	// 			$("<style>").html(file).appendTo("head");
+	// 		},
+	// 		error: function (e) {
+	// 			console.log(e);
+	// 			console.log(uri);
+	// 		}
+	// 	});
+	// };
 
 	// Define properties
 	var me = {
@@ -106,8 +109,14 @@ define([
 								ButtonHexDefault: { // @todo
 									type: "string",
 									label: 'Custom Hex Color for Slider Button',
-									ref: 'buttonHexDefault',
+									ref: 'vars.buttonHexDefault',
 									defaultValue: ''
+							    },	
+								SliderLabel: { // @todo
+									type: "string",
+									label: 'Label',
+									ref: 'vars.sliderLabel',
+									defaultValue: 'Label'
 							    },
 							}
 						}
@@ -122,8 +131,13 @@ define([
 
 	// Alter properties on edit		
 	me.paint = function($element,layout) {
-		var field = layout.qListObject.qDimensionInfo.qFallbackTitle;
-		var object = layout.qListObject.qDataPages[0].qMatrix;
+		var field = layout.qListObject.qDimensionInfo.qFallbackTitle,
+			object = layout.qListObject.qDataPages[0].qMatrix;
+		var vars = {
+			buttonHexDefault: null,
+			sliderLabel: null,
+		}
+		console.log(layout);
 		// Get Selection Bar
 		me.app.getList("SelectionObject", function(reply){
 			var selectedFields = reply.qSelectionObject.qSelections;
@@ -147,6 +161,9 @@ define([
 	// define HTML template
 	me.template = '\
 		<div qv-extension style="height: 100%; position: relative; overflow: auto;" class="ng-scope" id="SenseUI-Slider">\n\
+			<div id="sliderTop">{{sliderLabel}}: \n\
+				<input type="text" name="input" ng-model="range.min" ng-trim="false" size="4" ng-change="selectRange()"> to \n\
+				<input type="text" name="input" ng-model="range.max" ng-trim="false" size="4" ng-change="selectRange()"></div>\n\
 			<div id="sliderBar"></div>\n\
 			<div id="sliderMin">{{range.minDis}}</div>\n\
 			<div id="sliderMax">{{range.maxDis}}</div>\n\
@@ -157,7 +174,8 @@ define([
 	me.controller =['$scope','$rootScope', function($scope,$rootScope){
 		var field = $scope.$parent.layout.qListObject.qDimensionInfo.qFallbackTitle;
 		var object = $scope.$parent.layout.qListObject.qDataPages[0].qMatrix;
-
+		$scope.sliderLabel = $scope.$parent.layout.sliderLabel;
+// console.log($scope.$parent.layout);
 		if (typeof $rootScope.range === 'undefined') {
 			$rootScope.range = {};
 		}
@@ -172,7 +190,8 @@ define([
 
 		// Check if there are any selections from paint
 		$rootScope.$watch('range.values', function(newValue, oldValue) {
-			if (!$.isEmptyObject(newValue) && ($scope.range.values[0]!=newValue[0] || $scope.range.values[1]!=newValue[1])) { 
+			if (!$.isEmptyObject(newValue) && ($scope.range.values[0]!=newValue[0] || $scope.range.values[1]!=newValue[1])) {
+console.log(1);
 				$scope.range.minDis = me.getGetOrdinal(newValue[0]);
 				$scope.range.maxDis = me.getGetOrdinal(newValue[1]);
 				$scope.range.values = newValue;
@@ -194,13 +213,30 @@ define([
 			},
 			stop: function( event, ui ) {
 				// Make the selections
-				var rangen = [];
-				for (var i = ui.values[0]; i <= ui.values[1]; i++) {
-					rangen.push(i);
-				}
-				me.app.field(field).selectValues(rangen, false, false);
+				 $scope.selectRange();
+				// var rangen = [];
+				// for (var i = ui.values[0]; i <= ui.values[1]; i++) {
+				// 	rangen.push(i);
+				// }
+				// me.app.field(field).selectValues(rangen, false, false);
 			}
 	    });
+
+	    $scope.selectRange = function () {
+	    	$scope.range.min = parseInt($scope.range.min);
+	    	$scope.range.max = parseInt($scope.range.max);
+			$scope.range.minDis = me.getGetOrdinal($scope.range.min);
+			$scope.range.maxDis = me.getGetOrdinal($scope.range.max);
+	    	$scope.range.values = [$scope.range.min,$scope.range.max];
+			// Make the selections
+			var rangen = [];
+			for (var i = $scope.range.min; i <= $scope.range.max; i++) {
+				rangen.push(i);
+			}
+			me.app.field(field).selectValues(rangen, false, false);
+	    	$("#sliderBar").slider( 'values', $scope.range.values );
+	    	console.log($scope.range);
+	    }
 	}];
 
 	// Return Ordinal Numbers 1st, 2nd etc.
