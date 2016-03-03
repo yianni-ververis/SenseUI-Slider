@@ -122,6 +122,7 @@ define([
 
 	// Alter properties on edit		
 	me.paint = function($element,layout) {
+console.log(layout);
 		var vars = {
 			id: layout.qInfo.qId,
 			field: layout.qListObject.qDimensionInfo.qFallbackTitle,
@@ -135,8 +136,7 @@ define([
 				width: (layout.vars.input.width) ? layout.vars.input.width : 4,
 			},
 			height: $element.height(),
-			width: $element.width(),
-			this: this,		
+			width: $element.width(),			
 		}
 
 		if (typeof layout.vars.range === 'undefined') {
@@ -147,44 +147,35 @@ define([
 		}
 		if (typeof layout.vars.range.values === 'undefined') {
 			layout.vars.range.values = [];
-		}		
+		}
 		layout.vars.range.values[0] = (layout.vars.range.values[0]) ? layout.vars.range.values[0] : layout.vars.range.min;
 		layout.vars.range.values[1] = (layout.vars.range.values[1]) ? layout.vars.range.values[1] : layout.vars.range.max;
 		layout.vars.range.minDis = (vars.ordinal) ? me.getGetOrdinal(layout.vars.range.min) : layout.vars.range.min;
 		layout.vars.range.maxDis = (vars.ordinal) ? me.getGetOrdinal(layout.vars.range.max) : layout.vars.range.max;
-
+		
 		//Get Selection Bar
 		me.app.getList("SelectionObject", function(reply){
 			var selectedFields = reply.qSelectionObject.qSelections;
 			if (_.where(selectedFields, {'qField': vars.field}) && _.where(selectedFields, {'qField': vars.field}).length) {
 				var selectedObject = _.filter(vars.object, function(obj){ return obj[0].qState === 'S'; });
-				// if (selectedObject.length >= 1) {
-				// 	var min = _.min(selectedObject, function(o){return o[0].qNum;})[0].qNum,
-				// 		max = _.max(selectedObject, function(o){return o[0].qNum;})[0].qNum;
-				// 	layout.vars.range.values = [min, max];
-				// 	$("#sliderBar").slider( "option", "values", layout.vars.range.values );
-				// } else {	
-					$( "#" + vars.id + "_slider #input_from" ).val(layout.vars.range.values[0]);
-					$( "#" + vars.id + "_slider #input_to" ).val(layout.vars.range.values[1]);
-					$("#sliderBar").slider( "option", "values", layout.vars.range.values);
-				// }
-			} else {	
-				layout.vars.range.values[0] = layout.vars.range.min;
-				layout.vars.range.values[1] = layout.vars.range.max;
-				$( "#" + vars.id + "_slider #input_from" ).val(layout.vars.range.values[0]);
-				$( "#" + vars.id + "_slider #input_to" ).val(layout.vars.range.values[1]);
-				$("#sliderBar").slider( "option", "values", layout.vars.range.values);
+				if (selectedObject.length >= 1) {
+					var min = _.min(selectedObject, function(o){return o[0].qNum;})[0].qNum,
+						max = _.max(selectedObject, function(o){return o[0].qNum;})[0].qNum;
+					layout.vars.range.values = [min, max];
+					$("#sliderBar").slider( "option", "values", layout.vars.range.values );
+				}
 			}
 		});
 
+		// vars.template = 'YIANNIS';
 		vars.template = '\
-			<div qv-extension class="senseui-slider" id="' + vars.id + '_slider">\
+			<div qv-extension class="senseui-slider" id="' + vars.id + '">\
 		';
 		if (vars.visible) {
 			vars.template += '\
 				<div id="sliderTop"><span class="label">' + vars.label + ':</span> \n\
-					<input type="text" name="input_from" id="input_from" value="' + layout.vars.range.values[0] + '" size="' + vars.input.width + '"> to \n\
-					<input type="text" name="input_to" id="input_to" value="' + layout.vars.range.values[1] + '" size="' + vars.input.width + '">\n\
+					<input type="text" name="input" value="' + layout.vars.range.values[0] + '" size="' + vars.input.width + '" ng-change="selectRange2()"> to \n\
+					<input type="text" name="input" value="' + layout.vars.range.values[1] + '" size="' + vars.input.width + '" onchange="selectRange()">\n\
 				</div>';
 		}
 
@@ -194,6 +185,7 @@ define([
 				<div id="sliderMax">' + layout.vars.range.maxDis + '</div>\n\
 			</div>';
 
+		// $element.html($(vars.template).width(vars.width).height(vars.height));
 		$element.html(vars.template);
 
 	    // me.drawSlider = function () {
@@ -204,6 +196,8 @@ define([
 				max: layout.vars.range.max,
 				values: layout.vars.range.values,
 				slide: function( event, ui ) {
+					// layout.vars.range.min = ui.values[0];
+					// layout.vars.range.max = ui.values[1];
 					layout.vars.range.minDis = (vars.ordinal) ? me.getGetOrdinal(ui.values[0]) : ui.values[0];
 					layout.vars.range.maxDis = (vars.ordinal) ? me.getGetOrdinal(ui.values[1]) : ui.values[1];
 					layout.vars.range.values = [ui.values[0],ui.values[1]];
@@ -216,27 +210,19 @@ define([
 	    	$("#sliderBar").slider( "option", "values", layout.vars.range.values );
 	    }
 
-		$( "#" + vars.id + "_slider input[type='text']" ).change(function(e) {
-			layout.vars.range.values[0] = parseInt($( "#" + vars.id + "_slider #input_from" ).val());
-			layout.vars.range.values[1] = parseInt($( "#" + vars.id + "_slider #input_to" ).val());
-			me.selectRange();
-		});
-
-	    me.selectRange = function () {	
+	    me.selectRange = function () {
 	    	var min = parseInt(layout.vars.range.values[0]);
 	    	var max = parseInt(layout.vars.range.values[1]);
 			var minDis = me.getGetOrdinal(layout.vars.range.min);
 			var maxDis = me.getGetOrdinal(layout.vars.range.max);
+	    	// layout.vars.range.values = [min,layout.vars.range.max];
 			// Make the selections
 			var rangeSelected = [];
 			for (var i = min; i <= max; i++) {
 				rangeSelected.push(i);
 			}
-			me.app.field(vars.field).selectValues(rangeSelected, false, false).then(function(){
-				$( "#" + vars.id + "_slider #input_from" ).val(layout.vars.range.values[0]);
-				$( "#" + vars.id + "_slider #input_to" ).val(layout.vars.range.values[1]);
-		    	$("#sliderBar").slider( 'values', layout.vars.range.values );
-			})
+			me.app.field(vars.field).selectValues(rangeSelected, false, false);
+	    	$("#sliderBar").slider( 'values', layout.vars.range.values );
 	    }
 	};
 
@@ -245,6 +231,9 @@ define([
 
 	// Controller for binding
 	me.controller =['$scope','$rootScope', function($scope,$rootScope){
+		$scope.selectRange2 = function() {
+			console.log(1);
+		}
 	}];
 
 	// Return Ordinal Numbers 1st, 2nd etc.

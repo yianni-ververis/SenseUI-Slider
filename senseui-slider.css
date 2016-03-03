@@ -1,15 +1,19 @@
-#SenseUI-Slider {
+.senseui-slider {
 	padding: 10px;
 }
-#SenseUI-Slider #sliderMin,
-#SenseUI-Slider #sliderMax {
+.senseui-slider #sliderTop {
+	padding-bottom: 5px;
+}
+.senseui-slider #sliderTop .label {
+	padding-right: 10px;
+	font-weight: bold;
+}
+.senseui-slider #sliderMin,
+.senseui-slider #sliderMax {
 	padding-top: 5px;
 	display: inline-block;
 	width: 49%;
 }
-#SenseUI-Slider #sliderMax {
+.senseui-slider #sliderMax {
 	text-align: right;
-}
-#SenseUI-Slider #sliderTop {
-	padding-bottom: 5px;
 }
