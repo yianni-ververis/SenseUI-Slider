@@ -1,6 +1,9 @@
 .senseui-slider {
 	padding: 10px;
 }
+.senseui-slider input { 
+    text-align: center; 
+}
 .senseui-slider #sliderTop {
 	padding-bottom: 5px;
 }
@@ -16,4 +19,10 @@
 }
 .senseui-slider #sliderMax {
 	text-align: right;
+}
+.ui-slider-handle.ui-state-hover, 
+.ui-slider-handle.ui-state-focus, 
+.ui-slider-handle.ui-state-active {
+	border: 1px solid #009933;
+	background: #77b62a;
 }

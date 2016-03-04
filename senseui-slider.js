@@ -75,12 +75,24 @@ define([
 							type: "items",
 							label: "Slider Settings",
 							items: {	
-								ButtonHexDefault: { // @todo
+								HandleColor: { // @todo
 									type: "string",
-									label: 'Custom Hex Color for Slider Button',
-									ref: 'vars.buttonHexDefault',
+									label: 'Slider Handle Color',
+									ref: 'vars.handleColor',
 									defaultValue: '#CCC'
-							    },	
+							    },
+								HandleColorSelected: { // @todo
+									type: "string",
+									label: 'Slider Handle Selected Color',
+									ref: 'vars.handleColorSelected',
+									defaultValue: '#77b62a'
+							    },
+								BarColor: { // @todo
+									type: "string",
+									label: 'Slider Bar Color',
+									ref: 'vars.barColor',
+									defaultValue: '#e9e9e9'
+							    },
 								SliderLabel: { // @todo
 									type: "string",
 									label: 'Label',
@@ -126,7 +138,9 @@ define([
 			id: layout.qInfo.qId,
 			field: layout.qListObject.qDimensionInfo.qFallbackTitle,
 			object: layout.qListObject.qDataPages[0].qMatrix,
-			buttonHexDefault: (layout.vars.buttonHexDefault) ? layout.vars.buttonHexDefault : '#CCC',
+			handleColor: (layout.vars.handleColor) ? layout.vars.handleColor : '#CCC',
+			handleColorSelected: (layout.vars.handleColor) ? layout.vars.handleColor : '#77b62a',
+			barColor: (layout.vars.barColor) ? layout.vars.barColor : '#e9e9e9',
 			label: (layout.vars.label) ? layout.vars.label : null,
 			visible: (layout.vars.visible) ? true : false,
 			ordinal: (layout.vars.ordinal) ? true : false,
@@ -138,6 +152,7 @@ define([
 			width: $element.width(),
 			this: this,		
 		}
+
 
 		if (typeof layout.vars.range === 'undefined') {
 			layout.vars.range = {
@@ -221,6 +236,13 @@ define([
 			layout.vars.range.values[1] = parseInt($( "#" + vars.id + "_slider #input_to" ).val());
 			me.selectRange();
 		});
+
+		// $("#" + vars.id + "_slider .ui-state-default").css("background", vars.handleColor);
+		$("#" + vars.id + "_slider .ui-widget-header").css("background", vars.barColor);
+		// $("#" + vars.id + "_slider .ui-state-hover").css("background", vars.handleColorSelected);
+		$("#" + vars.id + "_slider .ui-state-default.ui-state-hover, #" + vars.id + "_slider .ui-state-default.ui-state-focus, #" + vars.id + "_slider .ui-state-default.ui-state-active").css("background", vars.handleColorSelected);
+		// $("#frWQdYS_slider .ui-widget-hover").css("background", "red");
+console.log(vars);
 
 	    me.selectRange = function () {	
 	    	var min = parseInt(layout.vars.range.values[0]);
