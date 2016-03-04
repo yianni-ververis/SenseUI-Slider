@@ -239,10 +239,7 @@ define([
 
 		// $("#" + vars.id + "_slider .ui-state-default").css("background", vars.handleColor);
 		$("#" + vars.id + "_slider .ui-widget-header").css("background", vars.barColor);
-		// $("#" + vars.id + "_slider .ui-state-hover").css("background", vars.handleColorSelected);
 		$("#" + vars.id + "_slider .ui-state-default.ui-state-hover, #" + vars.id + "_slider .ui-state-default.ui-state-focus, #" + vars.id + "_slider .ui-state-default.ui-state-active").css("background", vars.handleColorSelected);
-		// $("#frWQdYS_slider .ui-widget-hover").css("background", "red");
-console.log(vars);
 
 	    me.selectRange = function () {	
 	    	var min = parseInt(layout.vars.range.values[0]);
