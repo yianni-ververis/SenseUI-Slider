@@ -75,35 +75,42 @@ define([
 							type: "items",
 							label: "Slider Settings",
 							items: {	
-								HandleColor: { // @todo
+								HandleColor: {
 									type: "string",
 									label: 'Slider Handle Color',
 									ref: 'vars.handleColor',
 									defaultValue: '#CCC'
 							    },
-								HandleColorSelected: { // @todo
+								HandleColorSelected: {
 									type: "string",
 									label: 'Slider Handle Selected Color',
 									ref: 'vars.handleColorSelected',
 									defaultValue: '#77b62a'
 							    },
-								BarColor: { // @todo
+								BarColor: {
 									type: "string",
 									label: 'Slider Bar Color',
 									ref: 'vars.barColor',
 									defaultValue: '#e9e9e9'
 							    },
-								SliderLabel: { // @todo
+								Label: {
 									type: "string",
 									label: 'Label',
 									ref: 'vars.label',
 									defaultValue: 'Label'
 							    },	
-								SliderLabelVisible: {
+								LabelVisibility: {
 									type: "boolean",
 									label: 'Label Visibility',
 									ref: 'vars.visible',
 									defaultValue: true
+							    },
+								LabelPadding: {
+									type: "number",
+									expression: "none",
+									label: 'Label Bottom Padding',
+									ref: 'vars.padding',
+									defaultValue: 5
 							    },
 								SliderOrdinal: {
 									type: "boolean",
@@ -121,6 +128,22 @@ define([
 									min: 3,
 									max: 8
 								},
+								FontSize: {
+									type: "number",
+									expression: "none",
+									label: "Font Size",
+									component: "slider",
+									ref: "vars.font.size",
+									defaultValue: 12,
+									min: 10,
+									max: 14
+								},
+								FontColor: {
+									type: "string",
+									label: 'Font Color',
+									ref: 'vars.font.color',
+									defaultValue: '#000'
+							    },
 							}
 						}
 					}
@@ -143,10 +166,15 @@ define([
 			barColor: (layout.vars.barColor) ? layout.vars.barColor : '#e9e9e9',
 			label: (layout.vars.label) ? layout.vars.label : null,
 			visible: (layout.vars.visible) ? true : false,
+			padding: (layout.vars.padding) ? layout.vars.padding : 5,
 			ordinal: (layout.vars.ordinal) ? true : false,
 			template: '',
 			input: {
 				width: (layout.vars.input.width) ? layout.vars.input.width : 4,
+			},
+			font: {
+				size: (layout.vars.font.size) ? layout.vars.font.size : 12,
+				color: (layout.vars.font.color) ? layout.vars.font.color : '#000',
 			},
 			height: $element.height(),
 			width: $element.width(),
@@ -237,9 +265,13 @@ define([
 			me.selectRange();
 		});
 
+		// CSS
 		// $("#" + vars.id + "_slider .ui-state-default").css("background", vars.handleColor);
 		$("#" + vars.id + "_slider .ui-widget-header").css("background", vars.barColor);
 		$("#" + vars.id + "_slider .ui-state-default.ui-state-hover, #" + vars.id + "_slider .ui-state-default.ui-state-focus, #" + vars.id + "_slider .ui-state-default.ui-state-active").css("background", vars.handleColorSelected);
+		$("#" + vars.id + "_slider").css("font-size", vars.font.size);
+		$("#" + vars.id + "_slider").css("color", vars.font.color);
+		$("#" + vars.id + "_slider #sliderTop ").css("padding-bottom", vars.padding);
 
 	    me.selectRange = function () {	
 	    	var min = parseInt(layout.vars.range.values[0]);
