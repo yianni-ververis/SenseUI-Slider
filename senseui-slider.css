@@ -8,7 +8,7 @@
 .senseui-slider #sliderTop {
 	padding-bottom: 5px;
 }
-.senseui-slider #sliderTop .label {
+.senseui-slider #sliderTop .senseui-slider-label {
 	padding-right: 10px;
 	font-weight: bold;
 }

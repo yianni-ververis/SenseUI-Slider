@@ -79,7 +79,7 @@ define([
 									type: "string",
 									label: 'Slider Handle Color',
 									ref: 'vars.handleColor',
-									defaultValue: '#CCC'
+									defaultValue: '#f6f6f6'
 							    },
 								HandleColorSelected: {
 									type: "string",
@@ -162,7 +162,7 @@ define([
 			field: layout.qListObject.qDimensionInfo.qFallbackTitle,
 			object: layout.qListObject.qDataPages[0].qMatrix,
 			handleColor: (layout.vars.handleColor) ? layout.vars.handleColor : '#CCC',
-			handleColorSelected: (layout.vars.handleColor) ? layout.vars.handleColor : '#77b62a',
+			handleColorSelected: (layout.vars.handleColorSelected) ? layout.vars.handleColorSelected : '#77b62a',
 			barColor: (layout.vars.barColor) ? layout.vars.barColor : '#e9e9e9',
 			label: (layout.vars.label) ? layout.vars.label : null,
 			visible: (layout.vars.visible) ? true : false,
@@ -225,7 +225,7 @@ define([
 		';
 		if (vars.visible) {
 			vars.template += '\
-				<div id="sliderTop"><span class="label">' + vars.label + ':</span> \n\
+				<div id="sliderTop"><span class="senseui-slider-label">' + vars.label + ':</span> \n\
 					<input type="text" name="input_from" id="input_from" value="' + layout.vars.range.values[0] + '" size="' + vars.input.width + '"> to \n\
 					<input type="text" name="input_to" id="input_to" value="' + layout.vars.range.values[1] + '" size="' + vars.input.width + '">\n\
 				</div>';
@@ -266,13 +266,21 @@ define([
 		});
 
 		// CSS
-		// $("#" + vars.id + "_slider .ui-state-default").css("background", vars.handleColor);
+		$("#" + vars.id + "_slider .ui-state-default").css("background", vars.handleColor);
 		$("#" + vars.id + "_slider .ui-widget-header").css("background", vars.barColor);
-		$("#" + vars.id + "_slider .ui-state-default.ui-state-hover, #" + vars.id + "_slider .ui-state-default.ui-state-focus, #" + vars.id + "_slider .ui-state-default.ui-state-active").css("background", vars.handleColorSelected);
+		// $("#" + vars.id + "_slider .ui-state-default.ui-state-hover, #" + vars.id + "_slider .ui-state-default.ui-state-focus, #" + vars.id + "_slider .ui-state-default.ui-state-active").css("background", vars.handleColorSelected);
+		$('.ui-slider-handle.ui-state-hover, .ui-slider-handle.ui-state-focus, .ui-slider-handle.ui-state-active').css("background", vars.handleColorSelected);
+
+		$("#" + vars.id + "_slider .ui-slider-handle").hover(function(){
+			$(this).css("background",vars.handleColorSelected);
+		},function(){
+			$(this).css("background",vars.handleColor);
+		});
+
 		$("#" + vars.id + "_slider").css("font-size", vars.font.size);
 		$("#" + vars.id + "_slider").css("color", vars.font.color);
 		$("#" + vars.id + "_slider #sliderTop ").css("padding-bottom", vars.padding);
-
+		
 	    me.selectRange = function () {	
 	    	var min = parseInt(layout.vars.range.values[0]);
 	    	var max = parseInt(layout.vars.range.values[1]);
