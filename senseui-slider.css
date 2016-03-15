@@ -27,3 +27,23 @@
 	border: 1px solid #009933;
 	background: #77b62a;
 }
+.ui-slider {
+  margin: 0 5px; 
+}
+// PIPS
+// #sliderBar .ui-slider-pip .ui-slider-label {
+// 	display: none;
+// }
+// #sliderBar .ui-slider-pip .ui-slider-line {
+// 	height: 4px; 
+// }
+// #sliderBar .ui-slider-pip:nth-of-type(5n+3) .ui-slider-line {
+// 	height: 8px; 
+// }
+// #sliderBar .ui-slider-pip:nth-of-type(10n+3) .ui-slider-line {
+// 	height: 12px; 
+// }
+// #sliderBar .ui-slider-pip:nth-of-type(10n+3) .ui-slider-label {
+// 	top: 16px;
+// 	display: block; 
+// }

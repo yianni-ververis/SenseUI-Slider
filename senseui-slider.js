@@ -15,7 +15,9 @@ define([
 	"qvangular",
 	'underscore',	
 	"css!./jquery-ui.css",
+	"css!./jquery-ui-slider-pips.css",
 	"css!./senseui-slider.css",
+	"./jquery-ui-slider-pips",
 ], function(qlik, $, qvangular, _) {
 'use strict';
 	
@@ -117,6 +119,22 @@ define([
 									ref: 'vars.visible',
 									defaultValue: true
 							    },
+								TicksVisibility: {
+									type: "boolean",
+									label: 'Ticks Visibility',
+									ref: 'vars.tick.visibility',
+									defaultValue: false
+							    },
+								TickFrequency: {
+									type: "number",
+									expression: "none",
+									label: "Tick Frequency",
+									component: "slider",
+									ref: "vars.tick.frequency",
+									defaultValue: 1,
+									min: 1,
+									max: 10
+								},
 								LabelPadding: {
 									type: "number",
 									expression: "none",
@@ -180,6 +198,10 @@ define([
 			from: (layout.vars.from) ? layout.vars.from : '',
 			to: (layout.vars.to) ? layout.vars.to : 'to',
 			visible: (layout.vars.visible) ? true : false,
+			tick: {
+				visibility: (layout.vars.tick.visibility) ? true : false,
+				frequency: (layout.vars.tick.frequency) ? layout.vars.tick.frequency : 1,
+			},
 			padding: (layout.vars.padding) ? layout.vars.padding : 5,
 			ordinal: (layout.vars.ordinal) ? true : false,
 			template: '',
@@ -248,9 +270,18 @@ define([
 
 		vars.template += '\
 				<div id="sliderBar"></div>\n\
+			';
+
+	    if (!vars.tick.visibility) {
+			vars.template += '\
 				<div id="sliderMin">' + layout.vars.range.minDis + '</div>\n\
 				<div id="sliderMax">' + layout.vars.range.maxDis + '</div>\n\
-			</div>';
+			';
+	    }
+
+		vars.template += '\
+			</div>\n\
+			';
 
 		$element.html(vars.template);
 
@@ -274,6 +305,15 @@ define([
 	    	$("#sliderBar").slider( "option", "values", layout.vars.range.values );
 	    }
 
+	    if (vars.tick.visibility) {
+			$("#sliderBar").slider().slider("pips",{  
+				first: 'label',  
+				last: 'label',  
+				rest: 'label', 
+				step: vars.tick.frequency,
+			});
+	    }
+
 		$( "#" + vars.id + "_slider input[type='text']" ).change(function(e) {
 			layout.vars.range.values[0] = parseInt($( "#" + vars.id + "_slider #input_from" ).val());
 			layout.vars.range.values[1] = parseInt($( "#" + vars.id + "_slider #input_to" ).val());
@@ -283,7 +323,6 @@ define([
 		// CSS
 		$("#" + vars.id + "_slider .ui-state-default").css("background", vars.handleColor);
 		$("#" + vars.id + "_slider .ui-widget-header").css("background", vars.barColor);
-		// $("#" + vars.id + "_slider .ui-state-default.ui-state-hover, #" + vars.id + "_slider .ui-state-default.ui-state-focus, #" + vars.id + "_slider .ui-state-default.ui-state-active").css("background", vars.handleColorSelected);
 		$('.ui-slider-handle.ui-state-hover, .ui-slider-handle.ui-state-focus, .ui-slider-handle.ui-state-active').css("background", vars.handleColorSelected);
 
 		$("#" + vars.id + "_slider .ui-slider-handle").hover(function(){
@@ -293,6 +332,7 @@ define([
 		});
 
 		$("#" + vars.id + "_slider").css("font-size", vars.font.size);
+		$("#" + vars.id + "_slider .ui-slider-pips .ui-slider-pip").css("font-size", vars.font.size);
 		$("#" + vars.id + "_slider").css("color", vars.font.color);
 		$("#" + vars.id + "_slider #sliderTop ").css("padding-bottom", vars.padding);
 		
