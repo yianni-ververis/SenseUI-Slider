@@ -303,10 +303,23 @@ define([
 			var maxDis = me.getGetOrdinal(layout.vars.range.max);
 			// Make the selections
 			var rangeSelected = [];
+			var rangeSelected2 = [];
 			for (var i = min; i <= max; i++) {
+				_.find(layout.qListObject.qDataPages[0].qMatrix, function(obj){
+					if (obj[0].qNum==i) {
+						rangeSelected2.push(obj[0].qElemNumber);
+					}; 
+				}); 
 				rangeSelected.push(i);
 			}
-			me.app.field(vars.field).selectValues(rangeSelected, false, false).then(function(){
+			// @TODO find out why app.field works only sometimes. 
+// 			me.app.field(vars.field).select(rangeSelected, false, false).then(function(e){
+// 				$( "#" + vars.id + "_slider #input_from" ).val(layout.vars.range.values[0]);
+// 				$( "#" + vars.id + "_slider #input_to" ).val(layout.vars.range.values[1]);
+// 		    	$("#sliderBar").slider( 'values', layout.vars.range.values );
+// 			})
+			// This is only for a field selection not a dimension. I have to make the app.field work all of the time 
+			vars.this.backendApi.selectValues(0, rangeSelected2, false).then(function(e){
 				$( "#" + vars.id + "_slider #input_from" ).val(layout.vars.range.values[0]);
 				$( "#" + vars.id + "_slider #input_to" ).val(layout.vars.range.values[1]);
 		    	$("#sliderBar").slider( 'values', layout.vars.range.values );
