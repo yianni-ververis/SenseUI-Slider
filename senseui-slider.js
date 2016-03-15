@@ -99,6 +99,18 @@ define([
 									ref: 'vars.label',
 									defaultValue: 'Label'
 							    },	
+								From: {
+									type: "string",
+									label: 'From',
+									ref: 'vars.from',
+									defaultValue: ''
+							    },	
+								To: {
+									type: "string",
+									label: 'To',
+									ref: 'vars.to',
+									defaultValue: 'to'
+							    },	
 								LabelVisibility: {
 									type: "boolean",
 									label: 'Label Visibility',
@@ -165,6 +177,8 @@ define([
 			handleColorSelected: (layout.vars.handleColorSelected) ? layout.vars.handleColorSelected : '#77b62a',
 			barColor: (layout.vars.barColor) ? layout.vars.barColor : '#e9e9e9',
 			label: (layout.vars.label) ? layout.vars.label : null,
+			from: (layout.vars.from) ? layout.vars.from : '',
+			to: (layout.vars.to) ? layout.vars.to : 'to',
 			visible: (layout.vars.visible) ? true : false,
 			padding: (layout.vars.padding) ? layout.vars.padding : 5,
 			ordinal: (layout.vars.ordinal) ? true : false,
@@ -226,7 +240,8 @@ define([
 		if (vars.visible) {
 			vars.template += '\
 				<div id="sliderTop"><span class="senseui-slider-label">' + vars.label + ':</span> \n\
-					<input type="text" name="input_from" id="input_from" value="' + layout.vars.range.values[0] + '" size="' + vars.input.width + '"> to \n\
+					' + vars.from + '\
+					<input type="text" name="input_from" id="input_from" value="' + layout.vars.range.values[0] + '" size="' + vars.input.width + '"> ' + vars.to + ' \n\
 					<input type="text" name="input_to" id="input_to" value="' + layout.vars.range.values[1] + '" size="' + vars.input.width + '">\n\
 				</div>';
 		}
