@@ -311,6 +311,7 @@ define([
 				last: 'label',  
 				rest: 'label', 
 				step: vars.tick.frequency,
+				// qlik: me.selectRange()
 			});
 	    }
 

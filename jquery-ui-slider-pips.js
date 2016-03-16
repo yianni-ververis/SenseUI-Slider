@@ -268,9 +268,10 @@
                     slider.options.value = slider._trimAlignValue( val );
 
                 }
-
+                
                 slider._refreshValue();
                 slider._change( e, indexToChange );
+                slider._stop( e, indexToChange );
 
             }
 
